@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">navigationdrawtest</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Rules</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Mis Trips</string>
+    <string name="menu_slideshow">My profile</string>
+    <string name="menu_tools">Tools</string>
+    <string name="menu_share">Share to friends</string>
+    <string name="menu_send">Send</string>
+    <string name="titulo_normas">Normas de uso</string>
+    <string name="communications">Communications</string>
+    <string name="titulo_norma_comprobar_bicicleta">¡Comprueba la bici antes de irte!</string>
+    <string name="norma_comprobar_bicicleta">Tan pronto como se abra la cerradura,¡recuerda revisar tu bicicleta
+    ! En particular: manillar, frenos, sillín, ruedas, neumáticos, timbre, luces. Si hay algun problema, por favor cierra la bicicleta:¡no se te cobrará nada si cierras tu vieja en menos de un minuto y medio!¡Informa de los daños presionando el botón de la llave inglesa!</string>
+    <string name="titulo_norma_comprobar_area_estacionamiento">Cerrar la bicicleta</string>
+    <string name="norma_comprobar_area_estacionamiento">Al final de tu viaje no olvides mantener el candado de la bici con el de la base hast aque se accione el percutor y cierre el candado. Si no lo haces podrías impedir que el viaje termine, ¡lo que provocaría cargos adicionales!</string>
+    <string name="title_activity_borrar">Map</string>
+    <string name="facebook_application_id" translatable="false">2476246489361900</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb2476246489361900</string>
+    <string name="twitter_consumer_key" translatable="false">8lO75no1IWPt434n8L4sT23r9 </string>
+    <string name="twitter_consumer_secret" translatable="false">lPvSf52th4guoApfyjs1AYdfMmShXRELXyd66qu0SLynAjgmPY </string>
+</resources>
