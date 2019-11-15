@@ -5,15 +5,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import android.provider.Settings;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -23,6 +28,10 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -31,14 +40,24 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.view.Menu;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "TrayectosActivity";
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseUser usuario;
+
+    ArrayList<Trayectos> listaDocumentos = new ArrayList<>();
 
     private AppBarConfiguration mAppBarConfiguration;
     private boolean flag;
-    private FirebaseUser usuario;
-    private static final long MIN_TIME = 0;
 
+    private static final long MIN_TIME = 0;
+    FloatingActionButton fab;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,12 +68,11 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        FloatingActionButton fab = findViewById(R.id.fab);
+        fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                comprobarUsuarios();
             }
         });
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -194,4 +212,85 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    public void iniciarTrayectos(String correo, double idBici, String base) {
+
+
+        Map<String, Object> datos = new HashMap<>();
+        datos.put("IDbici", idBici);
+        datos.put("Email", correo);
+        datos.put("Base", base);
+        datos.put("Movimiento", true);
+
+        db.collection("Trayectos").document().set(datos);
+
+        Toast.makeText(this, "Trayecto empezado", Toast.LENGTH_LONG).show();
+
+    }
+    public void comprobarUsuarios() {
+        boolean encontrado = false;
+        final CollectionReference trayectos = db.collection("Trayectos");
+        trayectos.get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+
+
+                                String str = document.get("IDbici").toString();
+                                double IDbici = Double.valueOf(str).doubleValue();
+
+                                Trayectos trayecto = new Trayectos(usuario.getEmail(),
+                                        IDbici,
+                                        ((Boolean) document.get("Movimiento")),
+                                        document.get("Base").toString());
+                                Log.i(TAG, "He introducido el trayecto " + trayecto);
+                                listaDocumentos.add(trayecto);
+                                Log.i(TAG, "El documento " + document.getId() + " -->" + document.getData());
+                            }
+                        } else {
+                            Log.i(TAG, "Error obteniendo documento " + task.getException());
+                        }
+                    }
+                });
+        int posicion = -1;
+        for (int i = 0; !encontrado && i < listaDocumentos.size(); i++) {
+            if (listaDocumentos.get(i).getEmail().equals(usuario.getEmail())) {
+                encontrado = true;
+                posicion = i;
+
+            }
+        }
+        if (encontrado) {
+            if (listaDocumentos.get(posicion).isMovimiento()) {
+                //movimiento es true
+                Toast.makeText(MainActivity.this, "Ya tienes un trayecto activo", Toast.LENGTH_LONG).show();
+            } else {
+                //Se debe activar cuando se deje la bicicleta
+                fab.setEnabled(false);
+
+                iniciarTrayectos(usuario.getEmail(), listaDocumentos.get(posicion).getIdBici(), listaDocumentos.get(posicion).getBase());
+
+
+            }
+        }
+
+
+    }
+    public void lanzarInvitarAmigos(View view){
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, "Te invito a que descargues la APP de bicicletas: https://drive.google.com/file/d/1o7wEyF8kxrmyB43lCD4-0608xYL6rAFU/view?usp=sharing");
+        sendIntent.setType("text/plain");
+        startActivity(sendIntent);
+    }
+
+    public void llamarTelefono(MenuItem view) {
+        Intent intent = new Intent(Intent.ACTION_DIAL,
+                Uri.parse("tel:962849347"));
+        startActivity(intent);
+    }
+
 }

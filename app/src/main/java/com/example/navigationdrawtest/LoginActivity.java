@@ -149,8 +149,10 @@ public class LoginActivity extends AppCompatActivity {
 */
         if (!usuario.isEmailVerified()) {
             Log.i(TAG, "Estoy en estaLogueado y usuario.isEmailVerified() =  " + usuario.isEmailVerified());
-            Toast.makeText(this, "Verifica el correo: " + usuario.getEmail(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Verifica el correo " + usuario.getEmail()+" para poder usar las funcionalidades de la APP", Toast.LENGTH_LONG).show();
             usuario.sendEmailVerification();
+            finish();
+
 
 
         } else {

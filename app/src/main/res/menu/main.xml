@@ -15,17 +15,23 @@
         android:id="@+id/menu_login"
         android:icon="@drawable/baseline_people_black_18dp"
         android:orderInCategory="1"
-        android:title="Perfil de Usuario"
+        android:title="@string/perfil"
         app:showAsAction="always|withText" />
     <item
         android:id="@+id/menu_usuario1"
         android:icon="@android:drawable/ic_menu_info_details"
         android:orderInCategory="1"
-        android:title="Perfil de Usuario"
+        android:title="@string/perfil"
         app:showAsAction="always|withText" />
     <item
         android:id="@+id/boton_mapa"
         android:icon="@android:drawable/ic_menu_mapmode"
         android:orderInCategory="1"
-        android:title="Mapa"/>
+        android:title="@string/map"/>
+    <item
+        android:id="@+id/contactar"
+        android:onClick="llamarTelefono"
+        android:orderInCategory="100"
+        android:title="@string/contact"
+        app:showAsAction="never" />
 </menu>
